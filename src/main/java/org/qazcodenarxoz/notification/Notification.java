@@ -16,13 +16,13 @@ public class Notification {
     private final String to;
     private final String text;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Notification)) return false;
         Notification that = (Notification) o;
-        return id.equals(that.id);
+        // Безопасное сравнение id
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -32,8 +32,6 @@ public class Notification {
 
     @Override
     public String toString() {
-        return "Notification{id=" + id + ", channel=" + channel + "}";
+        return String.format("Notification[id=%d, channel=%s, to=%s]", id, channel, to);
     }
-
-
 }
