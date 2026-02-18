@@ -1,10 +1,13 @@
 package org.qazcodenarxoz.sender;
 
+import lombok.extern.slf4j.Slf4j;
 import org.qazcodenarxoz.annotation.ChannelHandler;
 import org.qazcodenarxoz.notification.Notification;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+
+@Slf4j
 @ChannelHandler("SMS")
 public class SMSSender implements Sender<Notification> {
 
@@ -16,16 +19,11 @@ public class SMSSender implements Sender<Notification> {
         Thread.sleep(ThreadLocalRandom.current().nextInt(20, 100));
 
         if (ThreadLocalRandom.current().nextInt(10) == 0) {
-            System.out.println("SEND FAIL id=" + notification.getId()
-                    + " channel=SMS thread=" + Thread.currentThread().getName()
-                    + " error=SIMULATED_FAIL");
             throw new RuntimeException("SIMULATED_FAIL");
         }
 
         long duration = System.currentTimeMillis() - start;
 
-        System.out.println("SEND OK id=" + notification.getId()
-                + " channel=SMS thread=" + Thread.currentThread().getName()
-                + " duration=" + duration + "ms");
+        log.info("SEND OK id={} channel=SMS thread={} duration={}ms", notification.getId(), Thread.currentThread().getName(), duration);
     }
 }

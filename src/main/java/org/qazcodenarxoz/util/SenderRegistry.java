@@ -1,16 +1,19 @@
 package org.qazcodenarxoz.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.qazcodenarxoz.annotation.ChannelHandler;
 import org.qazcodenarxoz.sender.EmailSender;
 import org.qazcodenarxoz.sender.SMSSender;
 import org.qazcodenarxoz.sender.Sender;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
+@Slf4j
 public class SenderRegistry {
 
     private final Map<String, Sender<?>> senders = new HashMap<>();
@@ -21,35 +24,14 @@ public class SenderRegistry {
 
     private void autoDiscover(String packageName) {
         try {
-            String path = packageName.replace('.', '/');
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            var resource = loader.getResource(path);
+            Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
+            var classes = reflections.getTypesAnnotatedWith(ChannelHandler.class);
 
-            if (resource == null) {
-                System.err.println("Package path not found: " + path);
-                return;
-            }
-
-            // Используем toURI(), чтобы корректно обработать пробелы и спецсимволы в путях
-            File directory = new File(resource.toURI());
-
-            if (!directory.exists()) return;
-
-            File[] files = directory.listFiles((dir, name) -> name.endsWith(".class"));
-
-            if (files != null) {
-                for (File file : files) {
-                    String className = packageName + "." + file.getName().replace(".class", "");
-                    Class<?> clazz = Class.forName(className);
-
-                    if (clazz.isAnnotationPresent(ChannelHandler.class)) {
-                        register(clazz);
-                    }
-                }
+            for (Class<?> clazz : classes) {
+                register(clazz);
             }
         } catch (Exception e) {
-            System.err.println("Reflection error: " + e.getMessage());
-            e.printStackTrace();
+            log.warn("Reflection error: {}", e.getMessage(), e);
         }
     }
 
@@ -58,7 +40,7 @@ public class SenderRegistry {
             ChannelHandler annotation = clazz.getAnnotation(ChannelHandler.class);
             Sender<?> sender = (Sender<?>) clazz.getDeclaredConstructor().newInstance();
             senders.put(annotation.value(), sender);
-            System.out.println("Plugin loaded: " + annotation.value());
+            log.info("Plugin loaded: {}", annotation.value());
         } catch (Exception e) {
             e.printStackTrace();
         }
