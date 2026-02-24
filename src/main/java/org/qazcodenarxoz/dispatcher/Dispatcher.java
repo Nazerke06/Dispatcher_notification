@@ -21,6 +21,7 @@ public class Dispatcher<T extends Notification> {
     private final SenderRegistry registry;
     private Metrics lastMetrics;
 
+
     public Dispatcher(NotificationRepository<T> repository, SenderRegistry registry) {
         this.repository = repository;
         this.registry = registry;

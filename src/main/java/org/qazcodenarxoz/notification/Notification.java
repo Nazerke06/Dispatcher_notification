@@ -8,13 +8,20 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-@RequiredArgsConstructor
+
 @Getter
 public class Notification {
     private final Long id;
     private final String channel;
     private final String to;
     private final String text;
+
+    public Notification(Long id, String channel, String to, String text) {
+        this.id = id;
+        this.channel = channel;
+        this.to = to;
+        this.text = text;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -25,6 +32,7 @@ public class Notification {
         return Objects.equals(id, that.id);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -32,6 +40,6 @@ public class Notification {
 
     @Override
     public String toString() {
-        return String.format("Notification[id=%d, channel=%s, to=%s]", id, channel, to);
+        return String.format("Notification[id=%d, channel=%s, to=%s, text=%s]", id, channel, to, text);
     }
 }

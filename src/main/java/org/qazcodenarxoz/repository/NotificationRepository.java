@@ -16,7 +16,8 @@ public class NotificationRepository<T extends Notification> {
     }
 
     public List<T> getAll() {
-        return new ArrayList<>(queue);
+//        return new ArrayList<>(queue);
+        return queue.stream().toList();
     }
 
     public T poll() {

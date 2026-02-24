@@ -2,8 +2,6 @@ package org.qazcodenarxoz.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.qazcodenarxoz.annotation.ChannelHandler;
-import org.qazcodenarxoz.sender.EmailSender;
-import org.qazcodenarxoz.sender.SMSSender;
 import org.qazcodenarxoz.sender.Sender;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
