@@ -19,7 +19,7 @@ public class Dispatcher<T extends Notification> {
 
     private final NotificationRepository<T> repository;
     private final SenderRegistry registry;
-    private Metrics lastMetrics;
+    private volatile Metrics lastMetrics;
 
 
     public Dispatcher(NotificationRepository<T> repository, SenderRegistry registry) {
@@ -117,6 +117,10 @@ public class Dispatcher<T extends Notification> {
             });
         }
 
+
         private record Result(Notification notification, boolean success, long duration, String error) {}
+    }
+    public Metrics getLastMetrics() {
+        return lastMetrics;
     }
 }

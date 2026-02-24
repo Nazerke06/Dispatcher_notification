@@ -3,7 +3,7 @@ package org.qazcodenarxoz.service;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Dispatcher {
+public class DispatcherHolder {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 

@@ -2,7 +2,7 @@ package org.qazcodenarxoz.servlet;
 
 
 import org.qazcodenarxoz.console.MessageProvider;
-import org.qazcodenarxoz.service.Dispatcher;
+import org.qazcodenarxoz.service.DispatcherHolder;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -12,11 +12,11 @@ import java.io.IOException;
 @WebServlet("/dispatch")
 public class DispatchServlet extends HttpServlet {
 
-    private Dispatcher dispatcher;
+    private DispatcherHolder dispatcher;
 
     @Override
     public void init() {
-        dispatcher = new Dispatcher();
+        dispatcher = new DispatcherHolder();
     }
 
     @Override
