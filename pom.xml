@@ -1,51 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.qazcodenarxoz</groupId>
-    <artifactId>Dispatcher_notification</artifactId>
+    <artifactId>dispatcher-notification</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
+
+    <name>Dispatcher Notification</name>
+    <description>Notification Dispatcher – console + embedded Tomcat HTTP</description>
 
     <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tomcat.version>10.1.34</tomcat.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
+            <version>1.18.34</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.17</version>
+            <version>2.0.16</version>
         </dependency>
-
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.12.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.14</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.12</version>
         </dependency>
 
         <dependency>
@@ -53,16 +85,78 @@
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
 
-            <!-- JaCoCo Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.qazcodenarxoz.Main</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- JaCoCo – как было, но обновил версию -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>0.8.12</version>
                 <configuration>
                     <excludes>
                         <exclude>org/qazcodenarxoz/annotation/**</exclude>
@@ -101,7 +195,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.7</minimum>
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -111,45 +205,26 @@
                 </executions>
             </plugin>
 
-            <!-- Maven Shade Plugin -->
+            <!-- Для копирования JSP и статических файлов в target -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>copy-webapp</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-
-                            <!-- Exclude overlapping files to prevent warnings -->
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/LICENSE*</exclude>
-                                        <exclude>META-INF/NOTICE*</exclude>
-                                        <exclude>META-INF/DEPENDENCIES</exclude>
-                                        <exclude>META-INF/versions/9/module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-
-                            <!-- Transformers -->
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.qazcodenarxoz.Main</mainClass>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/*</resource>
-                                </transformer>
-                            </transformers>
+                            <outputDirectory>${project.build.directory}/classes/webapp</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/webapp</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
@@ -157,4 +232,5 @@
 
         </plugins>
     </build>
+
 </project>
