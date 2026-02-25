@@ -1,8 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Dispatcher UI</title>
 </head>
 <body>
@@ -20,13 +22,14 @@
 <hr/>
 
 <form action="${pageContext.request.contextPath}/add" method="post">
-    <input type="text" name="message" placeholder="Message"/>
-    <button type="submit">
-        <c:choose>
-            <c:when test="${lang == 'ru'}">Добавить</c:when>
-            <c:otherwise>Add</c:otherwise>
-        </c:choose>
-    </button>
+    <select name="channel">
+        <option value="EMAIL">Email</option>
+        <option value="SMS">SMS</option>
+        <option value="WHATSAPP">WhatsApp</option>
+    </select>
+    <input type="text" name="to" placeholder="Recipient" required/>
+    <input type="text" name="message" placeholder="Message" required/>
+    <button type="submit">Add</button>
 </form>
 
 <br/>
@@ -44,13 +47,13 @@
 <br/>
 
 <form action="${pageContext.request.contextPath}/send" method="post">
-    <input type="number" name="threads" placeholder="Threads"/>
-    <button type="submit">
-        <c:choose>
-            <c:when test="${lang == 'ru'}">Отправить</c:when>
-            <c:otherwise>Send</c:otherwise>
-        </c:choose>
-    </button>
+    <select name="strategy">
+        <option value="fixed">Fixed Thread Pool</option>
+        <option value="cached">Cached Thread Pool</option>
+        <option value="single">Single Thread</option>
+    </select>
+    <input type="number" name="threads" placeholder="Threads (for fixed)" value="5"/>
+    <button type="submit">Send</button>
 </form>
 
 <hr/>

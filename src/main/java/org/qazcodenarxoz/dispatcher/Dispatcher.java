@@ -1,6 +1,7 @@
 package org.qazcodenarxoz.dispatcher;
 
 import lombok.extern.slf4j.Slf4j;
+import org.qazcodenarxoz.dispatcher.strategy.FixedThreadPoolStrategy;
 import org.qazcodenarxoz.notification.Notification;
 import org.qazcodenarxoz.notification.OTPNotification;
 import org.qazcodenarxoz.repository.NotificationRepository;
@@ -10,6 +11,7 @@ import org.qazcodenarxoz.util.SenderRegistry;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -27,25 +29,19 @@ public class Dispatcher<T extends Notification> {
         this.registry = registry;
     }
 
-    public void sendAll(int threads) throws InterruptedException {
-        log.info("Starting dispatch process with {} threads", threads);
-
-        ExecutorService executor = Executors.newFixedThreadPool(threads);
+    public void sendAll(DispatchStrategy strategy) throws InterruptedException {
+        log.info("Starting dispatch process with strategy: {}", strategy.getClass().getSimpleName());
         Metrics metrics = new Metrics();
-        T notification;
-        while ((notification = repository.poll()) != null) {
-            T finalNotification = notification;
-            executor.submit(() -> processTask(finalNotification, metrics));
-        }
-        executor.shutdown();
-        if (executor.awaitTermination(1, TimeUnit.MINUTES)) {
-            this.lastMetrics = metrics;
-            log.info("Dispatch process finished successfully");
-        } else {
-            log.error("Dispatch process timed out before all tasks finished!");
-        }
+        strategy.dispatch((Queue<Notification>) repository.getQueue(), metrics, registry);
+        this.lastMetrics = metrics;
+        log.info("Dispatch process finished");
     }
-    private void processTask(T notification, Metrics metrics) {
+
+    public void sendAll(int threads) throws InterruptedException {
+        sendAll(new FixedThreadPoolStrategy(threads));
+    }
+
+    public static void processTask(Notification notification, Metrics metrics, SenderRegistry registry) {
         long start = System.currentTimeMillis();
         try {
             Optional<Sender<?>> senderOpt = registry.getSender(notification.getChannel());
@@ -55,7 +51,7 @@ public class Dispatcher<T extends Notification> {
             }
 
             @SuppressWarnings("unchecked")
-            Sender<T> sender = (Sender<T>) senderOpt.get();
+            Sender<Notification> sender = (Sender<Notification>) senderOpt.get();
             sender.send(notification);
 
             long duration = System.currentTimeMillis() - start;

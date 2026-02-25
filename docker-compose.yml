@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  dispatcher:
+    build: .
+    container_name: dispatcher_container
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    restart: unless-stopped

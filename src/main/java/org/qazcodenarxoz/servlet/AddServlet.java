@@ -2,13 +2,14 @@ package org.qazcodenarxoz.servlet;
 
 import org.qazcodenarxoz.config.AppContext;
 import org.qazcodenarxoz.notification.Notification;
+import org.qazcodenarxoz.notification.OTPNotification;
+import org.qazcodenarxoz.util.IdGenerator;
+import org.qazcodenarxoz.web.FlashMessage;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 @WebServlet("/add")
 public class AddServlet extends HttpServlet {
@@ -18,19 +19,32 @@ public class AddServlet extends HttpServlet {
             throws IOException {
 
         String lang = getLang(req);
+        String channel = req.getParameter("channel");
+        String to = req.getParameter("to");
         String text = req.getParameter("message");
 
-        if (text != null && !text.isBlank()) {
-            long id = System.currentTimeMillis();
+        HttpSession session = req.getSession();
 
-            Notification n = new Notification(
-                    id,
-                    "EMAIL",
-                    "web_user",
-                    lang + " " + text   // 🔥 язык добавляем в текст
-            );
+        if (channel == null || to == null || text == null || text.isBlank()) {
+            session.setAttribute("flash", new FlashMessage("error", "All fields are required"));
+            resp.sendRedirect("/ui");
+            return;
+        }
 
-            AppContext.getRepository().add(n);
+        try {
+            long id = IdGenerator.nextId();
+            Notification notification;
+            if (text.contains("OTP")) {
+                String code = String.valueOf(ThreadLocalRandom.current().nextInt(1000, 10000));
+                notification = new OTPNotification(id, channel.toUpperCase(), to, text, code);
+            } else {
+                notification = new Notification(id, channel.toUpperCase(), to, text);
+            }
+
+            AppContext.getRepository().add(notification);
+            session.setAttribute("flash", new FlashMessage("success", "Notification added"));
+        } catch (Exception e) {
+            session.setAttribute("flash", new FlashMessage("error", "Error: " + e.getMessage()));
         }
 
         resp.sendRedirect("/ui");

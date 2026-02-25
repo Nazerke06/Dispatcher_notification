@@ -1,7 +1,11 @@
-FROM eclipse-temurin:21-jre-alpine
+# Берем официальный Tomcat 11
+FROM tomcat:11.0-jdk17-temurin
 
-WORKDIR /app
+# Копируем WAR-файл в папку webapps Tomcat
+COPY target/Dispatcher_notification-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/Dispatcher_notification.war
 
-COPY target/Dispatcher_notification-1.0-SNAPSHOT.jar app.jar
+# Открываем порт Tomcat
+EXPOSE 8000
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Запуск Tomcat
+CMD ["catalina.sh", "run"]

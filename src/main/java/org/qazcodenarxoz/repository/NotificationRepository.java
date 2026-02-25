@@ -27,4 +27,7 @@ public class NotificationRepository<T extends Notification> {
     public boolean isEmpty() {
         return queue.isEmpty();
     }
+    public Queue<T> getQueue() {
+        return queue;
+    }
 }

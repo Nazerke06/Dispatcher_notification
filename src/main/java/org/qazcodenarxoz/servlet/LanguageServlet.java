@@ -1,4 +1,5 @@
 package org.qazcodenarxoz.servlet;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -12,11 +13,12 @@ public class LanguageServlet extends HttpServlet {
 
         if (lang != null) {
             Cookie cookie = new Cookie("lang", lang);
-            cookie.setMaxAge(60 * 60 * 24 * 30); // 30 дней
+            cookie.setMaxAge(60 * 60 * 24 * 30);
             cookie.setPath("/");
             resp.addCookie(cookie);
         }
 
-        resp.sendRedirect("/dispatch");
+        // Используем contextPath, чтобы редирект работал в любом случае
+        resp.sendRedirect(req.getContextPath() + "/dispatch");
     }
 }
