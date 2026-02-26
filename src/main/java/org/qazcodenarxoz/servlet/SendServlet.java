@@ -16,6 +16,11 @@ import java.io.IOException;
 
 @WebServlet("/send")
 public class SendServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        resp.sendRedirect(req.getContextPath() + "/ui");
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)

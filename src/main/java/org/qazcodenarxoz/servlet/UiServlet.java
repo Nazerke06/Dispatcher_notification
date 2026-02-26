@@ -15,7 +15,6 @@ public class UiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // Чтение flash-сообщения из сессии
         HttpSession session = req.getSession(false);
         if (session != null) {
             FlashMessage flash = (FlashMessage) session.getAttribute("flash");

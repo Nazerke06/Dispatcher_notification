@@ -15,6 +15,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @WebServlet("/gen")
 public class GenServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        resp.sendRedirect(req.getContextPath() + "/ui");
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)

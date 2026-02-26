@@ -112,6 +112,17 @@ public class Dispatcher<T extends Notification> {
                 );
             });
         }
+        public long getSent() {
+            return results.stream()
+                    .filter(r -> r.success)
+                    .count();
+        }
+
+        public long getFailed() {
+            return results.stream()
+                    .filter(r -> !r.success)
+                    .count();
+        }
 
 
         private record Result(Notification notification, boolean success, long duration, String error) {}
@@ -119,4 +130,5 @@ public class Dispatcher<T extends Notification> {
     public Metrics getLastMetrics() {
         return lastMetrics;
     }
+
 }

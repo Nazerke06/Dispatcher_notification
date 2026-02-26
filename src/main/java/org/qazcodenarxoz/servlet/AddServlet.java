@@ -27,7 +27,7 @@ public class AddServlet extends HttpServlet {
 
         if (channel == null || to == null || text == null || text.isBlank()) {
             session.setAttribute("flash", new FlashMessage("error", "All fields are required"));
-            resp.sendRedirect("/ui");
+            resp.sendRedirect(req.getContextPath() + "/ui");
             return;
         }
 
@@ -47,7 +47,7 @@ public class AddServlet extends HttpServlet {
             session.setAttribute("flash", new FlashMessage("error", "Error: " + e.getMessage()));
         }
 
-        resp.sendRedirect("/ui");
+        resp.sendRedirect(req.getContextPath() + "/ui");
     }
 
     private String getLang(HttpServletRequest req) {

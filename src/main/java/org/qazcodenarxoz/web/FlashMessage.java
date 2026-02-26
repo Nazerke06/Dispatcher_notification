@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FlashMessage {
-    private final String type;   // "success" или "error"
+    private final String type;
     private final String text;
 }
