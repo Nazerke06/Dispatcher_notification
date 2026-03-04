@@ -1,5 +1,7 @@
-package org.qazcodenarxoz.module4_1.entity;
+package org.qazcodenarxoz.entity;
+
 import jakarta.persistence.*;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

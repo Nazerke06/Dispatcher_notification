@@ -1,13 +1,24 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  dispatcher:
+  db:
+    image: postgres:16
+    container_name: report_db
+    environment:
+      POSTGRES_DB: report
+      POSTGRES_USER: report
+      POSTGRES_PASSWORD: report
+    ports:
+      - "5432:5432"
+
+  app:
     build: .
-    container_name: dispatcher_container
+    container_name: report_app
+    depends_on:
+      - db
     ports:
       - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/report
+      SPRING_DATASOURCE_USERNAME: report
+      SPRING_DATASOURCE_PASSWORD: report
