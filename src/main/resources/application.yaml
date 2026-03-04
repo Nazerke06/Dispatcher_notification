@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/report
+    username: report
+    password: report
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
