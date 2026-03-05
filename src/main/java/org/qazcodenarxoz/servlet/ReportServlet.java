@@ -73,6 +73,7 @@ public class ReportServlet extends HttpServlet {
         filter.setMinCommission(parseBigDecimal(req.getParameter("minCommission")));
         filter.setMaxCommission(parseBigDecimal(req.getParameter("maxCommission")));
         filter.setHasFeeRule(parseBoolean(req.getParameter("hasFeeRule")));
+        filter.setBuyerExternalId(req.getParameter("buyerExternalId"));
 
         int page = parseInt(req.getParameter("page"), 0);
         int size = parseInt(req.getParameter("size"), 20);

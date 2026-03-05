@@ -111,6 +111,9 @@ public class TransactionReportService {
         if (filter.getMaxCommission() != null) {
             predicates.add(cb.lessThanOrEqualTo(root.get("commissionAmount"), filter.getMaxCommission()));
         }
+        if (isNotBlank(filter.getBuyerExternalId())) {
+            predicates.add(cb.equal(root.get("buyerExternalId"), filter.getBuyerExternalId()));
+        }
         if (filter.getHasFeeRule() != null) {
             if (filter.getHasFeeRule()) {
                 predicates.add(cb.isNotNull(root.get("commissionAmount")));

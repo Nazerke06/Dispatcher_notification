@@ -25,4 +25,5 @@ public class TransactionFilter {
     private int page = 0;
     private int size = 20;
     private String sort = "createdAt,desc";
+    private String buyerExternalId;
 }
