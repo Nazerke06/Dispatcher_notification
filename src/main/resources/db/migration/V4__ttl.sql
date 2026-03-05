@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE VIEW transaction_report AS
 SELECT
     t.tx_id,
@@ -57,3 +58,9 @@ FROM transactions t
     AND f.is_active = TRUE
     AND f.valid_from <= t.created_at
     AND (f.valid_to IS NULL OR f.valid_to >= t.created_at);
+
+
+
+
+
+

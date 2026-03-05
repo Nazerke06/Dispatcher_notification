@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V1__schema.sql" dialect="MariaDB" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V2__seed.sql" dialect="MariaDB" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V3__views.sql" dialect="MariaDB" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V4__ttl.sql" dialect="MariaDB" />
   </component>
 </project>
